@@ -1,11 +1,11 @@
 <?php
-// pagina inicial da empresa ficticia
+
 
 $nomeEmpresa = "Inova Digital";
 $anoFundacao = 2015;
 $faturamento = 50000;
 
-// inicio do site
+
 ?>
 
 <!DOCTYPE html>
