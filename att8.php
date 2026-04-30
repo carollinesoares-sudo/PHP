@@ -10,9 +10,9 @@ function exibir($nome, $salarioFinal) {
 
 
 $valor = calcularSalario(2000, 200);
-exibir("João", $valor);
+exibir("Carol", $valor);
 
 $valor = calcularSalario(1500, 100);
-exibir("Maria", $valor);
+exibir("Evelyn", $valor);
 
 ?>
