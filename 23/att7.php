@@ -1,1 +1,0 @@
-Crie uma algoritmo em PHP usando o for para fazer a tabuada de um numero.
