@@ -7,7 +7,7 @@
 </head>
 <body>
     <form method="post">
-        <label>Nome: </label>
+        <label>Nome: </label>//label é para o texto do campo, e input é para o campo em si
         <input type="text" name="nome" id="nome"><br>
         <label> E-mail: </label>
         <input type="email" name="email" id="email"><br>
