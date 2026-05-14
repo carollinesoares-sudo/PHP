@@ -2,108 +2,130 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Analisador de Salário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reajustador de Preços</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
-            background-color: #d34d9b; 
+            background-color: #e068da;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            color: #333;
+            margin: 0;
         }
 
-        main, section {
-            background-color: #ffffff;
-            width: 450px;
-            padding: 30px;
+        main {
+            background-color: white;
+            padding: 20px;
             border-radius: 15px;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
         }
 
-        h1, h2 {
-            color: #b1487d;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+        .input-area {
+            background-color: #b94592;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
+        h1 { font-size: 1.8rem; color: #110e0e; }
+        
+        label {
+            display: block;
+            background-color: #e96fa8;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: fit-content;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
             font-size: 1.2rem;
-            margin-bottom: 15px;
-            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 15px 0;
         }
 
         button {
-            background-color: #b35ea7; 
+            background-color: #e06ecd;
             color: white;
             border: none;
             padding: 12px;
-            border-radius: 8px;
+            width: 100%;
+            border-radius: 5px;
             font-size: 1.1rem;
-            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
         }
 
-        button:hover {
-            background-color: #c0456e;
+        .resultado {
+            background-color: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
         }
 
-        section p {
-            font-size: 1.1rem;
-            margin: 10px 0;
-        }
+        .resultado h2 { color: #350d31; margin-top: 0; }
     </style>
 </head>
 <body>
-    <?php 
-        // Configuração do Salário Mínimo
-        $minimo = 1621.00;
 
-        // Captura e tratamento do dado (Garante que não aceite negativo no PHP)
-        $salario = (float)($_GET['salario'] ?? 0);// Se o valor for negativo, define como 0
-        if ($salario < 0) $salario = 0;
+    <?php 
+        // Captura os dados
+        $preco = $_GET['preco'] ?? 0;
+        $reajuste = $_GET['reajuste'] ?? 0;
     ?>
 
     <main>
-        <h1>Salário R$:</h1>
-        <form action="<?=$_SERVER['PHP_SELF']?>" method="get">// Usando GET para facilitar a visualização do valor na URL
-            <input type="number" name="salario" step="0.01" min="0" value="<?=$salario?>">// O valor mínimo é 0, e o passo é 0.01 para permitir centavos
-            <p>Considerando o salário mínimo de <strong>R$ <?=number_format($minimo, 2, ",", ".")?></strong></p>
-            <button type="submit">Analisar</button>// O botão agora é para submeter o formulário e analisar o salário
+        <h1>Reajustador de Preços</h1>
+        <form action="<?=$_SERVER['PHP_SELF']?>" method="get">
+            <div class="input-area">
+                <label for="preco">Preço do Produto:</label>
+                <input type="number" name="preco" id="preco" step="0.01" min="0" value="<?=$preco?>" required>
+
+                <label for="reajuste">Percentual de Reajuste <span id="display-reajuste"><?=$reajuste?></span>%</label>
+                <input type="range" name="reajuste" id="reajuste" min="0" max="100" step="1" 
+                       value="<?=$reajuste?>" oninput="atualizarValor()">
+
+                <button type="submit">Calcular Reajuste</button>
+            </div>
         </form>
     </main>
 
-    <section>
-        <h2>Análise do Salário</h2>
-        <?php 
-        
-            $quantidade = (int)($salario / $minimo);
-            $sobra = $salario - ($quantidade * $minimo); // Calcula a sobra usando o salário e a quantidade de salários mínimos
-        ?>
+    <?php if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['preco'])): ?>
+        <section class="resultado">
+            <h2>Resultado do Reajuste</h2>
+            <?php 
+                $valor_reajuste = ($preco * $reajuste) / 100;
+                $novo_preco = $preco + $valor_reajuste;
+            ?>
+            <p>O produto que custava <strong>R$ <?=number_format($preco, 2, ",", ".")?></strong> 
+               com um reajuste de <strong><?=$reajuste?>%</strong> passará a custar 
+               <strong>R$ <?=number_format($novo_preco, 2, ",", ".")?></strong>.
+            </p>
+        </section>
+    <?php endif; ?>
 
-        <p>Quem recebe um salário de <strong>R$ <?=number_format($salario, 2, ",", ".")?></strong></p>
-        <p>Ganha <strong><?=$quantidade?></strong> salário(s) mínimo(s).</p>
-        
-        <p>E sobra: <strong>R$ <?=number_format(max(0, $sobra), 2, ",", ".")?></strong></p>
-    </section>
+    <script>
+        // Função simples para atualizar o texto do percentual enquanto move o slider
+        function atualizarValor() {
+            document.getElementById('display-reajuste').innerText = document.getElementById('reajuste').value;
+        }
+    </script>
+
 </body>
 </html>
