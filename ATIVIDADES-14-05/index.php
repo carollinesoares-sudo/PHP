@@ -6,64 +6,93 @@
     <title>Sorteador</title>
 
     <style>
-        body{
-            background-color: #cfc4c4;
-            font-family: Arial, Helvetica, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+       body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #e8f5e9, #f2f2f2);
+}
 
-        .container{
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 350px;
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
-        }
+.container {
+    background: #ffffff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    text-align: center;
+    width: 360px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        h2{
-            color: #00a651;
-            margin-bottom: 20px;
-        }
+.container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(121, 18, 18, 0.15);
+}
 
-        button{
-            background-color: #00a651;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
-        }
+h2 {
+    color: #be479b;
+    margin-bottom: 25px;
+    font-size: 22px;
+    letter-spacing: 0.5px;
+}
 
-        button:hover{
-            background-color: #008f45;
-            transform: scale(1.05);
-        }
+button {
+    background: linear-gradient(135deg, #d14295, #d45cac);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 15px rgba(146, 40, 146, 0.25);
+}
 
-        .resultado{
-            margin-top: 25px;
-        }
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(179, 30, 92, 0.35);
+}
 
-        .numero{
-            display: inline-block;
-            background-color: #00a651;
-            color: white;
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            border-radius: 50%;
-            margin: 5px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-    </style>
+button:active {
+    transform: scale(0.98);
+}
+
+.resultado {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.numero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #c059b7, #812866);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}</style>
 </head>
 
 <body>
