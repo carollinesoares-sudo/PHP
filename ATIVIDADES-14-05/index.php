@@ -1,134 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteador</title>
-
+    <title>Analisador de Salário</title>
     <style>
-       body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: linear-gradient(135deg, #e8f5e9, #f2f2f2);
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-.container {
-    background: #ffffff;
-    padding: 35px 30px;
-    border-radius: 16px;
-    text-align: center;
-    width: 360px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+        body {
+            background-color: #d34d9b; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
 
-.container:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 40px rgba(121, 18, 18, 0.15);
-}
+        main, section {
+            background-color: #ffffff;
+            width: 450px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
 
-h2 {
-    color: #be479b;
-    margin-bottom: 25px;
-    font-size: 22px;
-    letter-spacing: 0.5px;
-}
+        h1, h2 {
+            color: #b1487d;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
 
-button {
-    background: linear-gradient(135deg, #d14295, #d45cac);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    box-shadow: 0 6px 15px rgba(146, 40, 146, 0.25);
-}
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(179, 30, 92, 0.35);
-}
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
 
-button:active {
-    transform: scale(0.98);
-}
+        button {
+            background-color: #b35ea7; 
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-.resultado {
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+        button:hover {
+            background-color: #c0456e;
+        }
 
-.numero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #c059b7, #812866);
-    color: white;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    font-size: 16px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    animation: pop 0.25s ease;
-}
-
-@keyframes pop {
-    from {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}</style>
+        section p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <?php 
+        // Configuração do Salário Mínimo
+        $minimo = 1621.00;
 
-    <h2>Sorteador de Números</h2>
-
-    <form method="post">
-        <button type="submit">Sortear Números</button>
-    </form>
-
-    <?php
-    $numeros = [];
-
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-        while(count($numeros) < 6){
-            $numero = mt_rand(1, 60);
-
-            if(!in_array($numero, $numeros)){
-                $numeros[] = $numero;
-            }
-        }
-
-        sort($numeros);
-
-        echo "<div class='resultado'>";
-
-        foreach($numeros as $num){
-            echo "<span class='numero'>" . sprintf("%02d", $num) . "</span>";
-        }
-
-        echo "</div>";
-    }
+        // Captura e tratamento do dado (Garante que não aceite negativo no PHP)
+        $salario = (float)($_GET['salario'] ?? 0);// Se o valor for negativo, define como 0
+        if ($salario < 0) $salario = 0;
     ?>
 
-</div>
+    <main>
+        <h1>Salário R$:</h1>
+        <form action="<?=$_SERVER['PHP_SELF']?>" method="get">// Usando GET para facilitar a visualização do valor na URL
+            <input type="number" name="salario" step="0.01" min="0" value="<?=$salario?>">// O valor mínimo é 0, e o passo é 0.01 para permitir centavos
+            <p>Considerando o salário mínimo de <strong>R$ <?=number_format($minimo, 2, ",", ".")?></strong></p>
+            <button type="submit">Analisar</button>// O botão agora é para submeter o formulário e analisar o salário
+        </form>
+    </main>
+
+    <section>
+        <h2>Análise do Salário</h2>
+        <?php 
+        
+            $quantidade = (int)($salario / $minimo);
+            $sobra = $salario - ($quantidade * $minimo); // Calcula a sobra usando o salário e a quantidade de salários mínimos
+        ?>
+
+        <p>Quem recebe um salário de <strong>R$ <?=number_format($salario, 2, ",", ".")?></strong></p>
+        <p>Ganha <strong><?=$quantidade?></strong> salário(s) mínimo(s).</p>
+        
+        <p>E sobra: <strong>R$ <?=number_format(max(0, $sobra), 2, ",", ".")?></strong></p>
+    </section>
 </body>
 </html>
