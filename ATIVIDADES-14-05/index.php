@@ -2,129 +2,72 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reajustador de Preços</title>
+    <title>Meu Reajustador</title>
     <style>
+        /* Estilos que eu escolhi para o formulário */
         body {
-            background-color: #e068da;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        main {
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px;
-            width: 400px;
+            background-color: #e068da; /* Cor que eu gostei */
+            font-family: 'Segoe UI', sans-serif;
             text-align: center;
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
         }
-
-        .input-area {
-            background-color: #b94592;
+        .caixa {
+            background: white;
+            width: 350px;
+            margin: 50px auto;
             padding: 20px;
             border-radius: 10px;
-            margin-top: 10px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
         }
-
-        h1 { font-size: 1.8rem; color: #110e0e; }
-        
-        label {
-            display: block;
-            background-color: #e96fa8;
-            padding: 5px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            width: fit-content;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            margin: 15px 0;
-        }
-
-        button {
-            background-color: #e06ecd;
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .resultado {
-            background-color: white;
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .resultado h2 { color: #350d31; margin-top: 0; }
+        input { margin-bottom: 15px; width: 90%; }
+        button { background: #b94592; color: white; border: none; padding: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <?php 
-        // Captura os dados
-        $preco = $_GET['preco'] ?? 0;
-        $reajuste = $_GET['reajuste'] ?? 0;
+        // Pegando os valores que vêm da URL (GET)
+        $valor = $_GET['preco'] ?? 0;
+        $porcent = $_GET['reajuste'] ?? 0;
     ?>
 
-    <main>
-        <h1>Reajustador de Preços</h1>
-        <form action="<?=$_SERVER['PHP_SELF']?>" method="get">
-            <div class="input-area">
-                <label for="preco">Preço do Produto:</label>
-                <input type="number" name="preco" id="preco" step="0.01" min="0" value="<?=$preco?>" required>
+    <div class="caixa">
+        <h1>Ajustar Preço</h1>
+        <form action="index.php" method="get">
+            <label>Preço atual (R$):</label><br>
+            <input type="number" name="preco" step="0.01" value="<?=$valor?>"><br>
 
-                <label for="reajuste">Percentual de Reajuste <span id="display-reajuste"><?=$reajuste?></span>%</label>
-                <input type="range" name="reajuste" id="reajuste" min="0" max="100" step="1" 
-                       value="<?=$reajuste?>" oninput="atualizarValor()">
+            <label>Aumento: <span id="num">0</span>%</label><br>
+            <input type="range" name="reajuste" id="range" min="0" max="100" 
+                   oninput="mudarTexto()" value="<?=$porcent?>"><br>
 
-                <button type="submit">Calcular Reajuste</button>
-            </div>
+            <button type="submit">Calcular Agora</button>
         </form>
-    </main>
+    </div>
 
-    <?php if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['preco'])): ?>
-        <section class="resultado">
-            <h2>Resultado do Reajuste</h2>
+    <?php if (isset($_GET['preco'])): ?>
+        <div class="caixa">
+            <h2>Resultado:</h2>
             <?php 
-                $valor_reajuste = ($preco * $reajuste) / 100;
-                $novo_preco = $preco + $valor_reajuste;
+                // Fazendo a conta do aumento
+                $aumento = ($valor * $porcent) / 100;
+                $total = $valor + $aumento;
             ?>
-            <p>O produto que custava <strong>R$ <?=number_format($preco, 2, ",", ".")?></strong> 
-               com um reajuste de <strong><?=$reajuste?>%</strong> passará a custar 
-               <strong>R$ <?=number_format($novo_preco, 2, ",", ".")?></strong>.
+            <p>O produto de R$ <?=number_format($valor, 2, ",", ".")?> 
+               com <?=$porcent?>% de aumento vai para 
+               <strong>R$ <?=number_format($total, 2, ",", ".")?></strong>.
             </p>
-        </section>
+        </div>
     <?php endif; ?>
 
     <script>
-        // Função simples para atualizar o texto do percentual enquanto move o slider
-        function atualizarValor() {
-            document.getElementById('display-reajuste').innerText = document.getElementById('reajuste').value;
+        // Essa função faz o número mudar na tela enquanto eu arrasto o mouse
+        function mudarTexto() {
+            let slider = document.getElementById('range');
+            let texto = document.getElementById('num');
+            texto.innerText = slider.value;
         }
+        // Rodar ao carregar para o número não começar em 0 se já tiver valor
+        mudarTexto();
     </script>
 
 </body>
